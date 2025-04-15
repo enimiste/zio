@@ -1633,13 +1633,8 @@ object ZChannel {
     private[zio] final case class Finalizer[Env, OutErr, OutDone](finalizer: Exit[OutErr, OutDone] => URIO[Env, Any])
         extends Continuation[Env, Any, Any, Any, OutErr, Nothing, Nothing, OutDone, Nothing]
 
-    private[this] def SuccessIdentity(implicit
-      trace: Trace
-    ): Any => ZChannel[Any, Any, Any, Any, Nothing, Nothing, Any] =
-      ZChannel.succeedNow(_)
-
-    private[zio] def successIdentity[Z](implicit trace: Trace): Z => ZChannel[Any, Any, Any, Any, Nothing, Nothing, Z] =
-      SuccessIdentity.asInstanceOf[Z => ZChannel[Any, Any, Any, Any, Nothing, Nothing, Z]]
+    private[zio] def successIdentity[Z](z: Z)(implicit trace: Trace): ZChannel[Any, Any, Any, Any, Nothing, Nothing, Z] =
+      ZChannel.succeedNow(z)
 
     private[this] def FailCauseIdentity(implicit
       trace: Trace
